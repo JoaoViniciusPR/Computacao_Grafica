@@ -1,0 +1,10 @@
+#allText{
+	width: 500px;
+	position: absolute; top: 0px; left: 700px;
+}
+#button1 {
+	position: absolute; top: 10px; left: 10px;
+}
+#svg {
+	position: absolute; top: 10px; left: 80px;
+}
