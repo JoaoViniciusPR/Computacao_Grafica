@@ -46,7 +46,7 @@ var Node = function(id,cx,cy,r,name="",PR=0){
 	this.infoInit = {id:this.id,cx:this.cx,cy:this.cy,r:this.r,fill:"#323232",stroke:"black","stroke-width":"1"};
 	this.eSVG = create("circle",this.infoInit);
 	this.text = name;
-	this.tSVG = create("text",{x:this.cx,y:this.cy-8,"font-size":"14",fill:"black",'text-anchor':'middle'})
+	this.tSVG = create("text",{x:this.cx,y:this.cy-8,"font-size":"14",fill:"black",'text-anchor':'middle'});
 	this.pageRank = PR;
 	this.targets = {};
 }
