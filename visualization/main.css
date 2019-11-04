@@ -11,3 +11,11 @@
     left: 50%;
     margin-left: -250px;
 }
+#button1 {
+    width: 100px;
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    margin-left: -360px;
+    cursor: pointer;
+}
