@@ -19,8 +19,6 @@ class Graph{
         this.translating = false;
         this.dotTranslate = {x:0,y:0};
         this.oldTranslate = {x:0,y:0};
-        this.rotating = false;
-        this.dotRotate = {x:0,y:0};
     }
     //Id that will be used for new node
     static currentId = 1;
@@ -108,10 +106,6 @@ class Graph{
         this.listOfTransfs[0][0] = translX;
         this.listOfTransfs[0][1] = translY;
         this.updateTransf();
-    }
-    //Rotate
-    rotate(evt){
-
     }
     //Mouse functions
     workMouse(){

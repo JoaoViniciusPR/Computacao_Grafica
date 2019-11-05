@@ -9,5 +9,5 @@ mainSVG.appendChild(st);
 
 var graph = new Graph("svg");
 function newRandomGraph(){
-    graph.random(5,0.8);
+    graph.random(50,0.1);
 }
