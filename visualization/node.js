@@ -4,7 +4,6 @@ class Node{
         this.id = "node"+Node.getCurrentId();
         Node.setCurrentId();
         this.idGraph = myidgraph;
-        print(this.idGraph);
         Graph.getGraphById(this.idGraph).setListOfNodes(this.id,this);
         var infoInit = {id:this.id,cx:mycx,cy:mycy,r:Node.defaultR,fill:Node.defaultColor,stroke:"black","stroke-width":"1",cursor:"pointer"};
         this.SVG = create("circle",infoInit);
@@ -52,8 +51,9 @@ class Node{
     static defaultR = 5;
     //Position functions
     follow(dot){
-        this.SVG.setAttribute("cx",Graph.getGraphById(this.idGraph).limitX(dot.offsetX));
-        this.SVG.setAttribute("cy",Graph.getGraphById(this.idGraph).limitY(dot.offsetY));
+        var coord = Graph.getGraphById(this.idGraph).getInverseTransf(dot.offsetX,dot.offsetY);
+        this.SVG.setAttribute("cx",coord.x);
+        this.SVG.setAttribute("cy",coord.y);
         //this.SVG.setAttribute("transform",Graph.getGraphById(this.idGraph).getInverseTransf());
         for (var i=0;i<this.edges.length;i++){
             Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).update();

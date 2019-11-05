@@ -6,7 +6,6 @@ class Graph{
         this.height = this.mainSVG.height.animVal.value;
         //Basics
         this.id = "graph"+Graph.getCurrentId();
-        print(this.id);
         Graph.setCurrentId();
         Graph.setListOfGraphs(this.id,mysvg,this);
         this.SVG = create("g",{id:this.id});
@@ -20,6 +19,8 @@ class Graph{
         this.translating = false;
         this.dotTranslate = {x:0,y:0};
         this.oldTranslate = {x:0,y:0};
+        this.rotating = false;
+        this.dotRotate = {x:0,y:0};
     }
     //Id that will be used for new node
     static currentId = 1;
@@ -70,7 +71,7 @@ class Graph{
         }
     }
     //Limit the coordinates of nodes
-    limitX(x){
+    /*limitX(x){
         if(x<Node.defaultR+1){return Node.defaultR+1;}
         else if(x>width-(Node.defaultR+1)){return (width-(Node.defaultR+1));}
         else {return x}
@@ -79,7 +80,7 @@ class Graph{
         if(y<Node.defaultR+1){return Node.defaultR+1;}
         else if(y>height-(Node.defaultR+1)){return (height-(Node.defaultR+1));}
         else {return y}
-    }
+    }*/
     //About list of edges
     setListOfEdges(myid,myedge){
         this.listOfEdges[myid] = myedge;
@@ -93,17 +94,12 @@ class Graph{
     //Transformation functions
     updateTransf(){
         var strTranslate = "translate("+this.listOfTransfs[0].join(" ")+") ";
-        print(strTranslate);
         var strRotate = "rotate("+this.listOfTransfs[1].join(" ")+") ";
-        var strScale = "scale("+this.listOfTransfs[2].join(" ")+")";
+        var strScale = "scale("+this.listOfTransfs[2][0]+")";
         this.SVG.setAttribute("transform",strTranslate+strRotate+strScale);
-        var a = this.getMainSVG();
-        var b = this.SVG;
-        print(a.getTransformToElement(b))
     }
-    getInverseTransf(){
-        var strTranslate = "translate( "+(-1*this.listOfTransfs[0][0])+" "+(-1*this.listOfTransfs[0][1])+") ";
-        return strTranslate;
+    getInverseTransf(x,y){
+        return {x:x-this.listOfTransfs[0][0], y:y-this.listOfTransfs[0][1]};
     }
     //Translate
     translate(evt){
@@ -112,6 +108,10 @@ class Graph{
         this.listOfTransfs[0][0] = translX;
         this.listOfTransfs[0][1] = translY;
         this.updateTransf();
+    }
+    //Rotate
+    rotate(evt){
+
     }
     //Mouse functions
     workMouse(){
