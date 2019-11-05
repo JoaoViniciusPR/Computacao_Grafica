@@ -1,9 +1,10 @@
 class Edge{
-    constructor(myidNode1,myidNode2){
+    constructor(myidgraph,myidNode1,myidNode2){
         //Basics
         this.id = "edge"+Edge.getCurrentId();
         Edge.setCurrentId();
-        Graph.setListOfEdges(this.id,this);
+        this.idGraph = myidgraph;
+        Graph.getGraphById(this.idGraph).setListOfEdges(this.id,this);
         //About source and target
         this.idSource = myidNode1;
         this.idTarget = myidNode2;
@@ -15,18 +16,18 @@ class Edge{
         infoInit.x2 = target.getAttribute("cx");
         infoInit.y2 = target.getAttribute("cy");
         this.SVG = create("line",infoInit);
-        Graph.getNodeById(this.idSource).edges = this.id;
-        Graph.getNodeById(this.idTarget).edges = this.id;
+        Graph.getGraphById(this.idGraph).getNodeById(this.idSource).edges = this.id;
+        Graph.getGraphById(this.idGraph).getNodeById(this.idTarget).edges = this.id;
         this.workMouse();
     }
     //Draw the edge
     draw(){
-        Graph.getCurrentSVG().appendChild(this.SVG);
-        Node.drawAll();
+        Graph.getGraphById(this.idGraph).SVG.appendChild(this.SVG);
+        Graph.getGraphById(this.idGraph).drawAllNodes();
     }
     //Remove the node
     remove(){
-        Graph.getCurrentSVG().removeChild(this.SVG);
+        Graph.getGraphById(this.idGraph).SVG.removeChild(this.SVG);
     }
     //Overlap the node
     overlap(){
@@ -53,7 +54,7 @@ class Edge{
         },1);
     }*/
     //Id that will be used for new edge
-    static currentId = 0;
+    static currentId = 1;
     static setCurrentId(){
         Edge.currentId += 1;
     }
@@ -69,23 +70,24 @@ class Edge{
     }
     //Mouse functions
     workMouse(){
+        var auxId = this.idGraph;
         this.SVG.onmouseenter = function(){
-            Graph.getEdgeById(this.getAttribute("id")).mouseEnter();
+            Graph.getGraphById(auxId).getEdgeById(this.getAttribute("id")).mouseEnter();
         }
         this.SVG.onmouseleave = function(){
-            Graph.getEdgeById(this.getAttribute("id")).mouseLeave();
+            Graph.getGraphById(auxId).getEdgeById(this.getAttribute("id")).mouseLeave();
         }
     }
     mouseEnter(){
         this.changeColor("rgb(230,0,0)");
-        Graph.getNodeById(this.idSource).overlap();
-        Graph.getNodeById(this.idSource).changeColor("rgb(230,0,0)");
-        Graph.getNodeById(this.idTarget).overlap();
-        Graph.getNodeById(this.idTarget).changeColor("rgb(230,0,0)");
+        Graph.getGraphById(this.idGraph).getNodeById(this.idSource).overlap();
+        Graph.getGraphById(this.idGraph).getNodeById(this.idSource).changeColor("rgb(230,0,0)");
+        Graph.getGraphById(this.idGraph).getNodeById(this.idTarget).overlap();
+        Graph.getGraphById(this.idGraph).getNodeById(this.idTarget).changeColor("rgb(230,0,0)");
     }
     mouseLeave(){
         this.changeColor();
-        Graph.getNodeById(this.idSource).changeColor();
-        Graph.getNodeById(this.idTarget).changeColor();
+        Graph.getGraphById(this.idGraph).getNodeById(this.idSource).changeColor();
+        Graph.getGraphById(this.idGraph).getNodeById(this.idTarget).changeColor();
     }
 }

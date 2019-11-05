@@ -1,10 +1,12 @@
 class Node{
-    constructor(mycx,mycy,myname=""){
+    constructor(myidgraph,mycx,mycy,myname=""){
         //Basics
         this.id = "node"+Node.getCurrentId();
         Node.setCurrentId();
-        Graph.setListOfNodes(this.id,this);
-        var infoInit = {id:this.id,cx:mycx,cy:mycy,r:5,fill:Node.defaultColor,stroke:"black","stroke-width":"1",cursor:"pointer"};
+        this.idGraph = myidgraph;
+        print(this.idGraph);
+        Graph.getGraphById(this.idGraph).setListOfNodes(this.id,this);
+        var infoInit = {id:this.id,cx:mycx,cy:mycy,r:Node.defaultR,fill:Node.defaultColor,stroke:"black","stroke-width":"1",cursor:"pointer"};
         this.SVG = create("circle",infoInit);
         this.drawed = false;
         this._edges = [];
@@ -13,25 +15,19 @@ class Node{
     }
     //Draw the node
     draw(){
-        Graph.getCurrentSVG().appendChild(this.SVG);
+        Graph.getGraphById(this.idGraph).SVG.appendChild(this.SVG);
     }
     //Remove the node
     remove(){
-        Graph.getCurrentSVG().removeChild(this.SVG);
+        Graph.getGraphById(this.idGraph).SVG.removeChild(this.SVG);
     }
     //Overlap the node
     overlap(){
         this.remove();
         this.draw();
     }
-    //Draw all of nodes for they overlap the edges
-    static drawAll(){
-        for (var i in Graph.listOfNodes){
-            Graph.listOfNodes[i].overlap();
-        }
-    }
     //Id that will be used for new node
-    static currentId = 0;
+    static currentId = 1;
     static setCurrentId(){
         Node.currentId += 1;
     }
@@ -52,54 +48,58 @@ class Node{
     changeColor(newColor = Node.defaultColor){
         this.SVG.setAttribute("fill",newColor);
     }
+    //Size functions
+    static defaultR = 5;
     //Position functions
     follow(dot){
-        this.SVG.setAttribute("cx",Graph.limitX(dot.offsetX));
-        this.SVG.setAttribute("cy",Graph.limitY(dot.offsetY));
+        this.SVG.setAttribute("cx",Graph.getGraphById(this.idGraph).limitX(dot.offsetX));
+        this.SVG.setAttribute("cy",Graph.getGraphById(this.idGraph).limitY(dot.offsetY));
+        //this.SVG.setAttribute("transform",Graph.getGraphById(this.idGraph).getInverseTransf());
         for (var i=0;i<this.edges.length;i++){
-            Graph.getEdgeById(this.edges[i]).update();
+            Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).update();
         }
     }
     //Mouse functions
     workMouse(){
+        var auxId = this.idGraph;
         this.SVG.onmouseenter = function(){
-            Graph.getNodeById(this.getAttribute("id")).mouseEnter();
+            Graph.getGraphById(auxId).getNodeById(this.getAttribute("id")).mouseEnter();
         }
         this.SVG.onmouseleave = function(){
-            Graph.getNodeById(this.getAttribute("id")).mouseLeave();
+            Graph.getGraphById(auxId).getNodeById(this.getAttribute("id")).mouseLeave();
         }
         this.SVG.onmousedown = function(){
-            Graph.getNodeById(this.getAttribute("id")).mouseDown();
+            Graph.getGraphById(auxId).getNodeById(this.getAttribute("id")).mouseDown();
         }
         this.SVG.onmouseup = function(){
-            Graph.getNodeById(this.getAttribute("id")).mouseUp();
+            Graph.getGraphById(auxId).getNodeById(this.getAttribute("id")).mouseUp();
         }
         this.SVG.onmousemove = function(evt){
-            Graph.getNodeById(this.getAttribute("id")).mouseMove(evt);
+            Graph.getGraphById(auxId).getNodeById(this.getAttribute("id")).mouseMove(evt);
         }
     }
     mouseEnter(){
         this.changeColor("rgb(230,0,0)");
         for (var i=0;i<this.edges.length;i++){
-            Graph.getEdgeById(this.edges[i]).overlap();
-            Graph.getEdgeById(this.edges[i]).changeColor("rgb(230,0,0)");
+            Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).overlap();
+            Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).changeColor("rgb(230,0,0)");
         }
         this.overlap();
     }
     mouseLeave(){
         this.changeColor();
         for (var i=0;i<this.edges.length;i++){
-            Graph.getEdgeById(this.edges[i]).changeColor();
+            Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).changeColor();
         }
     }
     mouseDown(){
         this.following = true;
-        Graph.idChoosenNode = this.id;
+        Graph.getGraphById(this.idGraph).idChoosenNode = this.id;
         this.SVG.setAttribute("cursor","grabbing");
     }
     mouseUp(){
         this.following = false;
-        Graph.idChoosenNode = "";
+        Graph.getGraphById(this.idGraph).idChoosenNode = "";
         this.SVG.setAttribute("cursor","pointer");
     }
     mouseMove(evt){

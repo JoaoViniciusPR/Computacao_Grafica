@@ -1,104 +1,167 @@
 class Graph{
-    constructor(){}
-    //SVG that will be used for graph
-    static currentSVG = document.getElementById("svg");
-    static setCurrentSVG(myid){
-        Graph.currentSVG = document.getElementById(myid);
+    constructor(mysvg){
+        //SVG that will be used for graph
+        this.mainSVG = document.getElementById(mysvg);
+        this.width = this.mainSVG.width.animVal.value;
+        this.height = this.mainSVG.height.animVal.value;
+        //Basics
+        this.id = "graph"+Graph.getCurrentId();
+        print(this.id);
+        Graph.setCurrentId();
+        Graph.setListOfGraphs(this.id,mysvg,this);
+        this.SVG = create("g",{id:this.id});
+        this.mainSVG.appendChild(this.SVG);
+        this.listOfNodes = {};
+        this.idChoosenNode = "";
+        this.listOfEdges = {};
+        this.workMouse();
+        //Transformations
+        this.listOfTransfs = [[0,0],[0,0,0],[1]];
+        this.translating = false;
+        this.dotTranslate = {x:0,y:0};
+        this.oldTranslate = {x:0,y:0};
     }
-    static getCurrentSVG(){
-        return Graph.currentSVG;
+    //Id that will be used for new node
+    static currentId = 1;
+    static setCurrentId(){
+        Graph.currentId += 1;
+    }
+    static getCurrentId(){
+        return Graph.currentId;
+    }
+    //About list of graphs
+    static listOfGraphs = {};
+    static setListOfGraphs(myid,myidms,mygraph){
+        Graph.listOfGraphs[myid] = mygraph;
+        Graph.listOfGraphs[myidms] = mygraph;
+    }
+    static getListOfGraphs(){
+        return Graph.listOfGraphs;
+    }
+    static getGraphById(myid){
+        return Graph.listOfGraphs[myid];
+    }
+    static getGraphByIdMS(myid){
+        return Graph.listOfGraphs[myid];
+    }
+    //About main SVG
+    setMainSVG(myid){
+        this.mainSVG = document.getElementById(myid);
+        this.width = this.mainSVG.width.animVal.value;
+        this.height = this.mainSVG.height.animVal.value;
+    }
+    getMainSVG(){
+        return this.mainSVG;
     }
     //About list of nodes
-    static listOfNodes = {};
-    static setListOfNodes(myid,mynode){
-        Graph.listOfNodes[myid] = mynode;
+    setListOfNodes(myid,mynode){
+        this.listOfNodes[myid] = mynode;
     }
-    static getListOfNodes(){
-        return Graph.listOfNodes;
+    getListOfNodes(){
+        return this.listOfNodes;
     }
-    static getNodeById(myid){
-        return Graph.listOfNodes[myid];
+    getNodeById(myid){
+        return this.listOfNodes[myid];
     }
-    static idChoosenNode = "";
+    //Draw all of nodes for they overlap the edges
+    drawAllNodes(){
+        for (var i in this.getListOfNodes()){
+            this.getListOfNodes()[i].overlap();
+        }
+    }
     //Limit the coordinates of nodes
-    static limitX(x){
-        if(x<6){return 6;}
-        else if(x>width-6){return (width-6);}
+    limitX(x){
+        if(x<Node.defaultR+1){return Node.defaultR+1;}
+        else if(x>width-(Node.defaultR+1)){return (width-(Node.defaultR+1));}
         else {return x}
     }
-    static limitY(y){
-        if(y<6){return 6;}
-        else if(y>height-6){return (height-6);}
+    limitY(y){
+        if(y<Node.defaultR+1){return Node.defaultR+1;}
+        else if(y>height-(Node.defaultR+1)){return (height-(Node.defaultR+1));}
         else {return y}
     }
     //About list of edges
-    static listOfEdges = {};
-    static setListOfEdges(myid,myedge){
-        Graph.listOfEdges[myid] = myedge;
+    setListOfEdges(myid,myedge){
+        this.listOfEdges[myid] = myedge;
     }
-    static getListOfEdges(){
-        return Graph.listOfEdges;
+    getListOfEdges(){
+        return this.listOfEdges;
     }
-    static getEdgeById(myid){
-        return Graph.listOfEdges[myid];
+    getEdgeById(myid){
+        return this.listOfEdges[myid];
     }
     //Transformation functions
-    static listOfTransfs = ["","",""];
-    static updateTransf(){
-        Graph.getCurrentSVG().setAttribute("transform",Graph.listOfTransfs.join(" "));
+    updateTransf(){
+        var strTranslate = "translate("+this.listOfTransfs[0].join(" ")+") ";
+        print(strTranslate);
+        var strRotate = "rotate("+this.listOfTransfs[1].join(" ")+") ";
+        var strScale = "scale("+this.listOfTransfs[2].join(" ")+")";
+        this.SVG.setAttribute("transform",strTranslate+strRotate+strScale);
+        var a = this.getMainSVG();
+        var b = this.SVG;
+        print(a.getTransformToElement(b))
+    }
+    getInverseTransf(){
+        var strTranslate = "translate( "+(-1*this.listOfTransfs[0][0])+" "+(-1*this.listOfTransfs[0][1])+") ";
+        return strTranslate;
     }
     //Translate
-    static translating = false;
-    static dotTranslate = {x:0,y:0};
-    static translate(evt){
-        var translX = evt.offsetX-Graph.dotTranslate.x;
-        var translY = evt.offsetY-Graph.dotTranslate.y;
-        Graph.listOfTransfs[0] = "translate(" + translX + " " + translY + ")";
-        Graph.updateTransf();
+    translate(evt){
+        var translX = evt.offsetX-this.dotTranslate.x+this.oldTranslate.x;
+        var translY = evt.offsetY-this.dotTranslate.y+this.oldTranslate.y;
+        this.listOfTransfs[0][0] = translX;
+        this.listOfTransfs[0][1] = translY;
+        this.updateTransf();
     }
     //Mouse functions
-    static workMouse(){
-        Graph.getCurrentSVG().onmousedown = function(evt){
-            Graph.getCurrentSVG().setAttribute("cursor","move");
-            Graph.translating = true;
-            Graph.dotTranslate.x = evt.offsetX;
-            Graph.dotTranslate.y = evt.offsetY;
+    workMouse(){
+        this.getMainSVG().onmousedown = function(evt){
+            Graph.getGraphByIdMS(this.getAttribute("id")).mouseDown(evt);
         }
-        Graph.getCurrentSVG().onmouseup = function(){
-            Graph.getCurrentSVG().setAttribute("cursor","default");
-            Graph.translating = false;
+        this.getMainSVG().onmouseup = function(){
+            Graph.getGraphByIdMS(this.getAttribute("id")).mouseUp();
         }
-        Graph.getCurrentSVG().onmousemove = function(evt){
-            if (Graph.idChoosenNode!==""){
-                Graph.getNodeById(Graph.idChoosenNode).mouseMove(evt);
-            }
-            else if(Graph.translating){
-                //Graph.translate(evt);
-            }
+        this.getMainSVG().onmousemove = function(evt){
+            Graph.getGraphByIdMS(this.getAttribute("id")).mouseMove(evt);
+        }
+    }
+    mouseDown(evt){
+        this.getMainSVG().setAttribute("cursor","move");
+        this.translating = true;
+        this.oldTranslate.x = this.listOfTransfs[0][0];
+        this.oldTranslate.y = this.listOfTransfs[0][1];
+        this.dotTranslate.x = evt.offsetX;
+        this.dotTranslate.y = evt.offsetY;
+    }
+    mouseUp(){
+        this.getMainSVG().setAttribute("cursor","default");
+        this.translating = false;
+    }
+    mouseMove(evt){
+        if (this.idChoosenNode!==""){
+            this.getNodeById(this.idChoosenNode).mouseMove(evt);
+        }
+        else if(this.translating){
+            this.translate(evt);
         }
     }
     //The first graph type: random
-    static random(n,p){
-        //Create the first node in the center
-        var node0 = new Node(width/2,height/2);
-        node0.draw();
-        var number = 1;
+    random(n,p){
+        var auxGraph = this;
         var myInterval = setInterval(function() {
             //Create random node
-            var d = 10;
-            var mycx = d+Math.floor(Math.random()*(width-(2*d)+1));
-            var mycy = d+Math.floor(Math.random()*(height-(2*d)+1));
-            var node = new Node(mycx,mycy);
+            var mycx = randInt(2*Node.defaultR,auxGraph.width-2*Node.defaultR);
+            var mycy = randInt(2*Node.defaultR,auxGraph.height-2*Node.defaultR);
+            var node = new Node(auxGraph.id,mycx,mycy);
             node.draw();
             //Create random edges
-            for (var i=0;i<Object.keys(Graph.getListOfNodes()).length-1;i++){
+            for (var i=0;i<Object.keys(auxGraph.getListOfNodes()).length-1;i++){
                 if (Math.random()<=p){
-                    var edge = new Edge(node.id,(Object.keys(Graph.getListOfNodes()))[i]);
+                    var edge = new Edge(auxGraph.id,node.id,(Object.keys(auxGraph.getListOfNodes()))[i]);
                     edge.draw();
                 }
             }
-            number += 1;
-            if (number===n){
+            if (Object.keys(auxGraph.getListOfNodes()).length===n){
                 clearInterval(myInterval);
             }
         },2000);

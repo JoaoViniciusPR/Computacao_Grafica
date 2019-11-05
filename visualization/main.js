@@ -7,7 +7,7 @@ var height = mainSVG.height.animVal.value;
 var st = create("rect",{id:"st", x:"0", y:"0", width:width, height:height, fill:"transparent", stroke:"black", "stroke-width":3});
 mainSVG.appendChild(st);
 
-Graph.workMouse();
+var graph = new Graph("svg");
 function newRandomGraph(){
-    Graph.random(5,0.8);
+    graph.random(5,0.8);
 }
