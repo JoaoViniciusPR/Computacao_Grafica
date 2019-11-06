@@ -11,10 +11,8 @@ function newRandomGraph(){
 	var number = document.getElementById("number");
 	var prob = document.getElementById("prob");
 	var anim = document.getElementById("anim");
-	print(anim);
-	print(anim.value);
-	var b = (anim.value === "true");
-    graph.random(number.value,prob.value,b);
+	
+    graph.random(number.value,prob.value,anim.checked);
 }
 
 $("body").keydown(function (evt){
