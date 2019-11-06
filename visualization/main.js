@@ -9,7 +9,7 @@ mainSVG.appendChild(st);
 
 var graph = new Graph("svg");
 function newRandomGraph(){
-    graph.random(5,0.5);
+    graph.random(4,0.5);
 }
 
 $("body").keydown(function (evt){

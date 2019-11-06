@@ -19,21 +19,26 @@ class Edge{
         Graph.getGraphById(this.idGraph).getNodeById(this.idSource).edges = this.id;
         Graph.getGraphById(this.idGraph).getNodeById(this.idTarget).edges = this.id;
         this.workMouse();
+        this.drawed = false;
     }
     //Draw the edge
     draw(){
         Graph.getGraphById(this.idGraph).SVG.appendChild(this.SVG);
         Graph.getGraphById(this.idGraph).drawAllNodes();
+        this.drawed = true;
     }
-    //Remove the node
+    //Remove the edge
     remove(){
-        Graph.getGraphById(this.idGraph).SVG.removeChild(this.SVG);
+        if (this.drawed){
+            Graph.getGraphById(this.idGraph).SVG.removeChild(this.SVG);
+        }
     }
-    //Overlap the node
+    //Overlap the edge
     overlap(){
         this.remove();
         this.draw();
     }
+    //Update the edge
     update(){
         var source = document.getElementById(this.idSource);
         var target = document.getElementById(this.idTarget);
@@ -42,17 +47,6 @@ class Edge{
         this.SVG.setAttribute("x2",target.getAttribute("cx"));
         this.SVG.setAttribute("y2",target.getAttribute("cy"));
     }
-    //Animation the edge, from source to target
-    /*animation(){
-        var ghost = create("line",{x1:this.SVG.getAttribute(x1),y1:this.SVG.getAttribute(y1),
-            x2:this.SVG.getAttribute(x2),y2:this.SVG.getAttribute(y2),stroke:"rgb(0, 48, 102)","stroke-width":"2"});
-        Graph.getCurrentSVG().appendChild(ghost);
-        var vector = {x:this.SVG.x2-this.SVG.x1, y:this.SVG.y2-this.SVG.y1};
-        
-        var animInterval = setInterval(function() {
-
-        },1);
-    }*/
     //Id that will be used for new edge
     static currentId = 1;
     static setCurrentId(){

@@ -8,6 +8,10 @@ class Graph{
         this.id = "graph"+Graph.getCurrentId();
         Graph.setCurrentId();
         Graph.setListOfGraphs(this.id,mysvg,this);
+        this.variables();
+    }
+    variables(){
+        //Basics Elements
         this.SVG = create("g",{id:this.id});
         this.mainSVG.appendChild(this.SVG);
         this.listOfNodes = {};
@@ -29,6 +33,15 @@ class Graph{
     static getCurrentId(){
         return Graph.currentId;
     }
+    //About main SVG
+    setMainSVG(myid){
+        this.mainSVG = document.getElementById(myid);
+        this.width = this.mainSVG.width.animVal.value;
+        this.height = this.mainSVG.height.animVal.value;
+    }
+    getMainSVG(){
+        return this.mainSVG;
+    }
     //About list of graphs
     static listOfGraphs = {};
     static setListOfGraphs(myid,myidms,mygraph){
@@ -44,14 +57,11 @@ class Graph{
     static getGraphByIdMS(myid){
         return Graph.listOfGraphs[myid];
     }
-    //About main SVG
-    setMainSVG(myid){
-        this.mainSVG = document.getElementById(myid);
-        this.width = this.mainSVG.width.animVal.value;
-        this.height = this.mainSVG.height.animVal.value;
-    }
-    getMainSVG(){
-        return this.mainSVG;
+    static makingGraph = false;
+    //Reset the entire graph
+    reset(){
+        this.getMainSVG().removeChild(this.SVG);
+        this.variables();
     }
     //About list of nodes
     setListOfNodes(myid,mynode){
@@ -62,6 +72,10 @@ class Graph{
     }
     getNodeById(myid){
         return this.listOfNodes[myid];
+    }
+    getLastNode(){
+        var auxId = Object.keys(this.getListOfNodes())[Object.keys(this.getListOfNodes()).length];
+        return this.getNodeById(auxId);
     }
     //Draw all of nodes for they overlap the edges
     drawAllNodes(){
@@ -89,7 +103,7 @@ class Graph{
         var strScale = "scale("+this.infoTransf.s+")";
         var strTransform = strTranslate+strRotate+strScale;
         this.SVG.setAttribute("transform",strTransform);
-        print(strTransform);
+        //print(strTransform);
     }
     getInverseTransf(x,y){
         var x1 = x-this.infoTransf.t.x;
@@ -113,9 +127,9 @@ class Graph{
         this.infoTransf.t.x = evt.offsetX-this.dotTranslate.x+this.oldTranslate.x;
         this.infoTransf.t.y = evt.offsetY-this.dotTranslate.y+this.oldTranslate.y;
         this.updateTransf();
-        //let auxDot = this.getInverseTransf(250,250);
-        //this.dotRotate.x = auxDot.x;
-        //this.dotRotate.y = auxDot.y;
+        let auxDot = this.getInverseTransf(this.width/2,this.height/2);
+        this.dotRotate.x = auxDot.x;
+        this.dotRotate.y = auxDot.y;
     }
     //Rotate
     rotate(evt){
@@ -165,9 +179,9 @@ class Graph{
         else if(this.translating){
             this.translate(evt);
         }
-        let auxDot = this.getInverseTransf(evt.offsetX,evt.offsetX);
+        /*let auxDot = this.getInverseTransf(evt.offsetX,evt.offsetX);
         this.dotRotate.x = auxDot.x;
-        this.dotRotate.y = auxDot.y;
+        this.dotRotate.y = auxDot.y;*/
     }
     mouseOut(evt){
         this.getMainSVG().setAttribute("cursor","default");
@@ -175,22 +189,18 @@ class Graph{
     }
     //The first graph type: random
     random(n,p){
+        if (this.makingGraph===true){
+            clearInterval(this.myInterval);
+        }
+        this.reset();
         var auxGraph = this;
-        var myInterval = setInterval(function() {
-            //Create random node
-            var mycx = randInt(2*Node.defaultR,auxGraph.width-2*Node.defaultR);
-            var mycy = randInt(2*Node.defaultR,auxGraph.height-2*Node.defaultR);
-            var node = new Node(auxGraph.id,mycx,mycy);
-            node.draw();
-            //Create random edges
-            for (var i=0;i<Object.keys(auxGraph.getListOfNodes()).length-1;i++){
-                if (Math.random()<=p){
-                    var edge = new Edge(auxGraph.id,node.id,(Object.keys(auxGraph.getListOfNodes()))[i]);
-                    edge.draw();
-                }
-            }
-            if (Object.keys(auxGraph.getListOfNodes()).length===n){
-                clearInterval(myInterval);
+        this.makingGraph = true;
+        this.myInterval = setInterval(function() {
+            Node.randomNode(auxGraph.id,p,true);
+            auxGraph.getListOfNodes()[auxGraph.getListOfNodes().length];
+            if (Object.keys(auxGraph.getListOfNodes()).length>=n){
+                clearInterval(auxGraph.myInterval);
+                auxGraph.makingGraph = false;
             }
         },2000);
     }
