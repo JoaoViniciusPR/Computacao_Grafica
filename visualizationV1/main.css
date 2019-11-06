@@ -1,0 +1,21 @@
+#heading{
+    width: 500px;
+    position: absolute;
+    top: 0px;
+    left : 50%;
+    margin-left: -250px;
+}
+#svg{
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    margin-left: -250px;
+}
+#button1 {
+    width: 100px;
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    margin-left: -360px;
+    cursor: pointer;
+}
