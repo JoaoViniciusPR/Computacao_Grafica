@@ -139,7 +139,7 @@ class Graph{
             this.infoTransf.r.push({ang:0, x:this.dotRotate.x, y:this.dotRotate.y});
         }
 
-        this.infoTransf.r[this.infoTransf.r.length-1].ang += 1;
+        this.infoTransf.r[this.infoTransf.r.length-1].ang += 5;
         if (this.infoTransf.r[this.infoTransf.r.length-1].ang===360){
             this.infoTransf.r[this.infoTransf.r.length-1].ang = 0;
         }
@@ -188,7 +188,7 @@ class Graph{
         this.translating = false;
     }
     //The first graph type: random
-    random(n,p){
+    random(n,p,anim=false){
         if (this.makingGraph===true){
             clearInterval(this.myInterval);
         }
@@ -196,7 +196,7 @@ class Graph{
         var auxGraph = this;
         this.makingGraph = true;
         this.myInterval = setInterval(function() {
-            Node.randomNode(auxGraph.id,p,true);
+            Node.randomNode(auxGraph.id,p,anim);
             auxGraph.getListOfNodes()[auxGraph.getListOfNodes().length];
             if (Object.keys(auxGraph.getListOfNodes()).length>=n){
                 clearInterval(auxGraph.myInterval);

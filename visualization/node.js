@@ -42,7 +42,7 @@ class Node{
     }
     //Animate the edges of this node
     animateEdges(){
-        var ghosts = [];
+        //var ghosts = [];
         var vectors = [];
         var totalSteps = 400;
         for (var i=0;i<this.edges.length;i++){
@@ -51,9 +51,9 @@ class Node{
                 x2:auxEdge.SVG.getAttribute("x2"), y2:auxEdge.SVG.getAttribute("y2"),
                 stroke:"rgb(179, 218, 255)","stroke-width":"1"});
             Graph.getGraphById(this.idGraph).SVG.appendChild(ghost);*/
-            var ghost = new Edge(this.idGraph,auxEdge.idSource,auxEdge.idTarget);
+            /*var ghost = new Edge(this.idGraph,auxEdge.idSource,auxEdge.idTarget);
             ghost.draw();
-            ghosts.push(ghost);
+            ghosts.push(ghost);*/
             vectors.push({x:auxEdge.SVG.getAttribute("x2")-auxEdge.SVG.getAttribute("x1"),
                 y:auxEdge.SVG.getAttribute("y2")-auxEdge.SVG.getAttribute("y1")});
         }
@@ -73,7 +73,7 @@ class Node{
             if (step===totalSteps){
                 for (var i=0;i<vectors.length;i++){
                     Graph.getGraphById(auxNode.idGraph).getEdgeById(auxNode.edges[i]).update();
-                    ghosts[i].remove();
+                    //ghosts[i].remove();
                 }
                 clearInterval(animInterval);
             }
