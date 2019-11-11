@@ -195,6 +195,19 @@ class Node{
                 }
             }
         }
+        if (this.edges.length === 0){
+            if (Object.keys(Graph.getGraphById(this.idGraph).getListOfNodes()).length!==1){
+                let i = randInt(0,Object.keys(Graph.getGraphById(this.idGraph).getListOfNodes()).length-2);
+                let auxId = Object.keys(Graph.getGraphById(this.idGraph).getListOfNodes())[i];
+                var edge = new Edge(this.idGraph,this.id,auxId);
+                if(Graph.animation){
+                    edge.animate();
+                }
+                else{
+                    edge.draw();
+                }
+            }
+        }
     }
     //Rank functions
     rankByDegree(limit=false){
