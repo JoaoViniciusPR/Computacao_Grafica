@@ -6,24 +6,52 @@
 </head>
 
 <body>
-	<h1 id="heading">Visualização de Grafos Aleatórios</h1>
-	<input id="button1" type="button" value="Gerar Grafo" onclick="newRandomGraph();"/>
-	<div id="div1">
-        <label for="number">(Número de nós) n = </label>
-        <input type="text" id="number" min="1" inputmode="numeric" />
-	</div>
-	<div id="div2">
-        <label for="prob">(Probabilidade) p = </label>
-        <input type="text" id="prob" min="0" max="1" inputmode="numeric"/>
-	</div>
-	<div id="div3">
-        <label for="anim">Animação</label>
-        <input type="checkbox" id="anim" value="true" checked="true"/>
-	</div>
+	<h1 id="heading">Visualização de Grafos</h1>
 	<p id="autor"> João Vinícius Primaki Prado</p>
+	<svg id="svg" width="900" height="500" viewbox="0 0 900 500"></svg>
 	
-	<svg id="svg" width="1000" height="500" viewbox="0 0 1000 500"></svg>
-
+	<div id="divAll">
+		<div class="element" id="divManual">
+			<input class="element" id="manual" type="radio" name="creation">
+			<span class="element" ><b>Manual</b></span><br>
+			<label class="element" id="manualText">Crie manualmente utilizando os comandos</label><br>
+		</div>
+		<div class="element" id="divAutomatic">
+			<input class="element" id="automatic" type="radio" name="creation" checked="true">
+			<span class="element"><b>Automático</b></span><br>
+			<select class="element" id="graphType">
+				<option>Selecione o tipo de grafo</option>
+				<option>Aleatório</option>
+				<option>Preferencial</option>
+			</select><br>
+			<div class="element">
+				<label for="number">(Número de nós) n = </label>
+				<input type="text" id="number" min="1" inputmode="numeric"/>
+			</div>
+			<div class="element">
+				<label class="element" for="prob">(Probabilidade)&nbsp;&nbsp;&nbsp;p = </label>
+				<input class="element" type="text" id="prob" min="0" max="1" inputmode="numeric"/>
+			</div>
+			
+			<input class="element" id="createNodes" type="button" value="Criar mais nós" onclick="createGraph(false);"/><br>
+			<input class="element" id="createGraph" type="button" value="Criar novo grafo" onclick="createGraph(true);"/>
+		</div>
+		<div class="element" id="divGeneral">
+			<label class="element"> <b>Geral</b> </label><br>
+			<label class="element" for="animation">Animação</label>
+			<input class="element" type="checkbox" id="animation" checked="true"/><br>
+			<label class="element" for="delay">Intervalo de tempo</label>
+			<input class="element" type="checkbox" id="delay" checked="true"/><br>
+			<input class="element" id="clean" type="button" value="Limpar Tela" onclick="clean();"/><br>
+			<input class="element" id="resetTransf" type="button" value="Resetar Transformações" onclick="resetTransf();"/><br>
+			<select class="element" id="rankType">
+				<option>Selecione a organização</option>
+				<option>Por grau</option>
+			</select><br>
+			<input class="element" id="rank" type="button" value="Organizar" onclick="newRank();"/>
+		</div>
+	</div>
+	
 	<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 	<script type="text/javascript" src="init.js"></script>
 	<script type="text/javascript" src="node.js"></script>

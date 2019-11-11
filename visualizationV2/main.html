@@ -1,0 +1,36 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Trabalho A2</title>
+	<link rel="stylesheet" type="text/css" href="main.css" />
+</head>
+
+<body>
+	<h1 id="heading">Visualização de Grafos Aleatórios</h1>
+	
+	<input id="button1" type="button" value="Gerar Grafo" onclick="newRandomGraph();"/>
+	<input id="button2" type="button" value="Organizar por Grau" onclick="newRankByDegree();"/>
+	<div id="div1">
+        <label for="number">(Número de nós) n = </label>
+        <input type="text" id="number" min="1" inputmode="numeric" />
+	</div>
+	<div id="div2">
+        <label for="prob">(Probabilidade) p = </label>
+        <input type="text" id="prob" min="0" max="1" inputmode="numeric"/>
+	</div>
+	<div id="div3">
+        <label for="anim">Animação</label>
+        <input type="checkbox" id="anim" value="true" checked="true"/>
+	</div>
+	<p id="autor"> João Vinícius Primaki Prado</p>
+	
+	<svg id="svg" width="900" height="500" viewbox="0 0 900 500"></svg>
+
+	<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+	<script type="text/javascript" src="init.js"></script>
+	<script type="text/javascript" src="node.js"></script>
+	<script type="text/javascript" src="edge.js"></script>
+	<script type="text/javascript" src="graph.js"></script>
+	<script type="text/javascript" src="main.js"></script>
+</body>
+</html>

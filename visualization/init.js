@@ -2,6 +2,16 @@ function print(p){
     console.log(p);
 }
 
+function printevt(evt){
+    print("Client "+evt.clientX+" "+evt.clientY);
+    print("Offset "+evt.offsetX+" "+evt.offsetY);
+    print("layer "+evt.layerX+" "+evt.layerY);
+    print("movement "+evt.movementX+" "+evt.movementY);
+    print("page "+evt.pageX+" "+evt.pageY);
+    print("Screen "+evt.screenX+" "+evt.screenY);
+    print("X "+evt.x+" "+"Y "+evt.y);
+}
+
 function randInt(a,b){
     return a+Math.floor(Math.random()*(b+1-a));
 }

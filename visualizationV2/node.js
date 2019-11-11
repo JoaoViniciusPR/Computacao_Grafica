@@ -53,7 +53,6 @@ class Node{
     }
     //Radius functions
     static defaultRadius = 5;
-    static maxRadius = 30;
     //Animate the node
     animate(){
         var auxRadius = Node.defaultRadius;
@@ -113,48 +112,28 @@ class Node{
         }
     }
     mouseDown(){
-        if (Graph.getGraphById(this.idGraph).temporaryId!==""){
-            var edge = new Edge(this.idGraph,Graph.getGraphById(this.idGraph).temporaryId,this.id);
-            if(Graph.animation){
-                edge.animate();
-            }
-            else{
-                edge.draw();
-            }
-            Graph.getGraphById(this.idGraph).temporaryId = "";
-        }
-        else if (Graph.getGraphById(this.idGraph).ableToCreateEdge){
-            Graph.getGraphById(this.idGraph).temporaryId = this.id;
-        }
-        else {
-            this.following = true;
-            this.SVG.setAttribute("cursor","grabbing");
-            Graph.getGraphById(this.idGraph).idChoosenNode = this.id;
-        }
+        this.following = true;
+        Graph.getGraphById(this.idGraph).idChoosenNode = this.id;
+        this.SVG.setAttribute("cursor","grabbing");
     }
     mouseUp(){
         this.following = false;
-        this.SVG.setAttribute("cursor","pointer");
         Graph.getGraphById(this.idGraph).idChoosenNode = "";
+        this.SVG.setAttribute("cursor","pointer");
     }
     mouseMove(evt){
         if(this.following){
             this.follow(evt);
         }
     }
-    //New-node functions
-    static random(myidgraph,p=false,mode=""){
+    //Random functions
+    static randomNode(myidgraph,p=false){
         var mycx = randInt(2*Node.defaultRadius,Graph.getGraphById(myidgraph).width-2*Node.defaultRadius);
         var mycy = randInt(2*Node.defaultRadius,Graph.getGraphById(myidgraph).height-2*Node.defaultRadius);
         var node = new Node(myidgraph,mycx,mycy);
         node.draw();
         if (p){
-            if (mode==="random"){
-                node.randomEdges(p);
-            }
-            else if (mode==="preferred"){
-                node.preferredEdges(p);
-            }
+            node.randomEdges(p);
         }
     }
     randomEdges(p){
@@ -162,32 +141,8 @@ class Node{
             if (Math.random()<=p){
                 var edge = new Edge(this.idGraph,this.id,(Object.keys(Graph.getGraphById(this.idGraph).getListOfNodes()))[i]);
                 if(Graph.animation){
-                    edge.animate();
-                }
-                else{
+                    edge.SVG.setAttribute("stroke","rgb(179, 218, 255)");
                     edge.draw();
-                }
-            }
-        }
-    }
-    preferredEdges(p){
-        var oldMaxDegree = Graph.getGraphById(this.idGraph).getMaxDegree();
-        for (var i=0;i<Object.keys(Graph.getGraphById(this.idGraph).getListOfNodes()).length-1;i++){
-            let auxId = Object.keys(Graph.getGraphById(this.idGraph).getListOfNodes())[i];
-            if (Graph.getGraphById(this.idGraph).getNodeById(auxId).degree===oldMaxDegree){
-                if (Math.random()<=p){
-                    var edge = new Edge(this.idGraph,this.id,auxId);
-                    if(Graph.animation){
-                        edge.animate();
-                    }
-                    else{
-                        edge.draw();
-                    }
-                }
-            }
-            else if (Math.random()<=p*Graph.getGraphById(this.idGraph).getNodeById(auxId).degree/oldMaxDegree){
-                var edge = new Edge(this.idGraph,this.id,auxId);
-                if(Graph.animation){
                     edge.animate();
                 }
                 else{
@@ -197,25 +152,13 @@ class Node{
         }
     }
     //Rank functions
-    rankByDegree(limit=false){
-        if (limit){
-            print("kkk");
-            this.r = Node.defaultRadius+(this.degree/limit)*(Node.maxRadius-Node.defaultRadius);
-            if (Graph.animation){
-                this.animate();
-            }
-            else{
-                this.SVG.setAttribute("r",this.r);
-            }
+    rankByDegree(){
+        this.r = Node.defaultRadius+this.degree;
+        if (Graph.animation){
+            this.animate();
         }
         else{
-            this.r = Node.defaultRadius+this.degree;
-            if (Graph.animation){
-                this.animate();
-            }
-            else{
-                this.SVG.setAttribute("r",this.r);
-            }
+            this.SVG.setAttribute("r",this.r);
         }
     }
 }

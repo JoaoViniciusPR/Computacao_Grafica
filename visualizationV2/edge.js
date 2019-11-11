@@ -49,8 +49,6 @@ class Edge{
     }
     //Animate the edge
     animate(){
-        this.SVG.setAttribute("stroke","rgb(179, 218, 255)");
-        this.draw();
         var _this = this;
         var totalSteps = 400;
         var step = 0;

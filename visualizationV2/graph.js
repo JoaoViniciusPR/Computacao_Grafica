@@ -20,9 +20,6 @@ class Graph{
         this.listOfEdges = {};
         this.hasElements = false;
         this.makingGraph = false;
-        this.ableToCreateNode = false;
-        this.ableToCreateEdge = false;
-        this.temporaryId = "";
         this.workMouse();
         //Transformations: Translate t, Rotate r, Scale s
         this.translating = false;
@@ -39,10 +36,6 @@ class Graph{
     static getCurrentId(){
         return Graph.currentId;
     }
-    //HTML informations
-    static mode = "automatic";
-    static animation = true;
-    static delay = 2000;
     //About main SVG
     setMainSVG(myid){
         this.mainSVG = document.getElementById(myid);
@@ -186,19 +179,12 @@ class Graph{
         }
     }
     mouseDown(evt){
-        if (this.ableToCreateNode && Graph.mode==="manual"){
-            var dot = this.getInverseTransf(evt.offsetX,evt.offsetY);
-            var node = new Node(this.id,dot.x,dot.y);
-            node.draw();
-        }
-        else{
-            this.getMainSVG().setAttribute("cursor","move");
-            this.translating = true;
-            this.oldTranslate.x = this.infoTransf.t.x;
-            this.oldTranslate.y = this.infoTransf.t.y;
-            this.dotTranslate.x = evt.offsetX;
-            this.dotTranslate.y = evt.offsetY;
-        }
+        this.getMainSVG().setAttribute("cursor","move");
+        this.translating = true;
+        this.oldTranslate.x = this.infoTransf.t.x;
+        this.oldTranslate.y = this.infoTransf.t.y;
+        this.dotTranslate.x = evt.offsetX;
+        this.dotTranslate.y = evt.offsetY;
     }
     mouseUp(){
         this.getMainSVG().setAttribute("cursor","default");
@@ -211,6 +197,9 @@ class Graph{
         else if(this.translating){
             this.translate(evt);
         }
+        /*let auxDot = this.getInverseTransf(evt.offsetX,evt.offsetX);
+        this.dotRotate.x = auxDot.x;
+        this.dotRotate.y = auxDot.y;*/
     }
     mouseOut(evt){
         this.getMainSVG().setAttribute("cursor","default");
@@ -219,65 +208,31 @@ class Graph{
     mouseWheel(evt){
         this.scale(evt);
     }
-    //Create functions
-    create(graphtype,n,p,reset){
+
+    //The first graph type: random
+    randomGraph(n,p){
         if (this.makingGraph===true){
             clearInterval(this.myInterval);
         }
-        if (reset){
-            this.reset();
-        }
-        if (graphtype==="random"){
-            this.random(n,p);
-        }
-        else if (graphtype==="preferred"){
-            this.preferred(n,p);
-        }
-    }
-    //Graph type: random
-    random(n,p){
-        var _this = this;
+        this.reset();
+        var auxGraph = this;
         this.makingGraph = true;
-        var number = 0;
         this.myInterval = setInterval(function() {
-            if (number>=n){
-                clearInterval(_this.myInterval);
-                _this.makingGraph = false;
+            if (Object.keys(auxGraph.getListOfNodes()).length>=n){
+                clearInterval(auxGraph.myInterval);
+                auxGraph.makingGraph = false;
             }
             else{
-                Node.random(_this.id,p,"random");
-                number++;
+                Node.randomNode(auxGraph.id,p);
+            auxGraph.getListOfNodes()[auxGraph.getListOfNodes().length];
             }
-        },Graph.delay);
+        },2000);
     }
-    //Graph type: preferred
-    preferred(n,p){
-        var _this = this;
-        this.makingGraph = true;
-        var number = 0;
-        this.myInterval = setInterval(function() {
-            if (number>=n){
-                clearInterval(_this.myInterval);
-                _this.makingGraph = false;
-            }
-            else{
-                Node.random(_this.id,p,"preferred");
-                number++;
-            }
-        },Graph.delay);
-    }
-    //Rank type: degree
-    newRank(ranktype){
-        if (ranktype==="degree"){
-            if(this.maxDegree<=Node.maxRadius-Node.defaultRadius){
-                for (var i in this.getListOfNodes()){
-                    this.getListOfNodes()[i].rankByDegree();
-                }
-            }
-            else{
-                for (var i in this.getListOfNodes()){
-                    this.getListOfNodes()[i].rankByDegree(this.getMaxDegree());
-                }
+    //The first rank type: degree
+    rankByDegree(){
+        if(this.maxDegree<=50){
+            for (var i in this.getListOfNodes()){
+                this.getListOfNodes()[i].rankByDegree();
             }
         }
     }
