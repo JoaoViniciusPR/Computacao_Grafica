@@ -269,7 +269,7 @@ class Graph{
     //Rank type: degree
     newRank(ranktype){
         if (ranktype==="degree"){
-            if(this.maxDegree<=Node.maxRadius-Node.defaultRadius){
+            if (this.getMaxDegree()<=(Node.maxRadius-Node.defaultRadius)){
                 for (var i in this.getListOfNodes()){
                     this.getListOfNodes()[i].rankByDegree();
                 }

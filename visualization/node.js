@@ -59,7 +59,7 @@ class Node{
         var auxRadius = Node.defaultRadius;
         var _this = this;
         var nodeAnimInterval = setInterval(function(){
-            if (auxRadius===_this.r){
+            if (auxRadius>=_this.r){
                 clearInterval(nodeAnimInterval);
             }
             else{
@@ -212,8 +212,12 @@ class Node{
     //Rank functions
     rankByDegree(limit=false){
         if (limit){
-            print("kkk");
+            print(limit);
+            print(Node.defaultRadius);
+            print(this.degree);
+            print(Node.maxRadius-Node.defaultRadius);
             this.r = Node.defaultRadius+(this.degree/limit)*(Node.maxRadius-Node.defaultRadius);
+            print(this.r);
             if (Graph.animation){
                 this.animate();
             }
