@@ -4,7 +4,7 @@ var height = mainSVG.height.animVal.value;
 
 var st = create("rect",{id:"st", x:"0", y:"0", width:width, height:height, fill:"transparent", stroke:"black", "stroke-width":3});
 mainSVG.appendChild(st);
-var projetor = 0;
+var projetor =1;
 if (projetor===1){
     Edge.defaultColor = "rgb(0, 0, 255)";
 }
