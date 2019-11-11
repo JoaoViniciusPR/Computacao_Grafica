@@ -36,7 +36,7 @@ function createGraph(reset){
                 graph.create(graphType,number,prob,reset);
             }
             else{
-                graph.create("preferred",5,0.7,reset);
+                //graph.create("preferred",5,0.7,reset);
             }
         }
         else{
