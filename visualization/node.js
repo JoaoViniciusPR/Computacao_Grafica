@@ -8,6 +8,7 @@ class Node{
         Graph.getGraphById(this.idGraph).setListOfNodes(this.id,this);
         var infoInit = {id:this.id,cx:mycx,cy:mycy,r:this.r,fill:Node.defaultColor,stroke:"black","stroke-width":"1",cursor:"pointer"};
         this.SVG = create("circle",infoInit);
+        this.tSVG = create("text",{x:mycx,y:mycy-10,"font-size":"20",fill:"black",'text-anchor':'middle'});
         this.drawed = false;
         this._edges = [];
         this.degree = 0;
@@ -64,6 +65,7 @@ class Node{
             }
             else{
                 _this.SVG.setAttribute("r",auxRadius);
+                _this.tSVG.setAttribute("y",_this.SVG.getAttribute("cy")-auxRadius-5);
                 auxRadius += 1;
             }
 
@@ -74,6 +76,8 @@ class Node{
         var coord = Graph.getGraphById(this.idGraph).getInverseTransf(dot.offsetX,dot.offsetY);
         this.SVG.setAttribute("cx",coord.x);
         this.SVG.setAttribute("cy",coord.y);
+        this.tSVG.setAttribute("x",coord.x);
+        this.tSVG.setAttribute("y",coord.y-10);
         //this.SVG.setAttribute("transform",Graph.getGraphById(this.idGraph).getInverseTransf());
         for (var i=0;i<this.edges.length;i++){
             Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).update();
@@ -105,9 +109,13 @@ class Node{
             Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).changeColor("rgb(230,0,0)");
         }
         this.overlap();
+        Graph.getGraphById(this.idGraph).SVG.appendChild(this.tSVG);
+	    this.tSVG.innerHTML = this.degree.toString();
+        
     }
     mouseLeave(){
         this.changeColor();
+        Graph.getGraphById(this.idGraph).SVG.removeChild(this.tSVG);
         for (var i=0;i<this.edges.length;i++){
             Graph.getGraphById(this.idGraph).getEdgeById(this.edges[i]).changeColor();
         }
@@ -223,6 +231,7 @@ class Node{
             }
             else{
                 this.SVG.setAttribute("r",this.r);
+                this.tSVG.setAttribute("y",this.SVG.getAttribute("cy")-this.r-5);
             }
         }
         else{
@@ -232,6 +241,7 @@ class Node{
             }
             else{
                 this.SVG.setAttribute("r",this.r);
+                this.tSVG.setAttribute("y",this.SVG.getAttribute("cy")-this.r-5);
             }
         }
     }
